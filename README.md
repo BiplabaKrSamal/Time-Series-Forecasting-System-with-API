@@ -371,7 +371,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**Built as a production-grade data science submission**
+**Built as a production-grade**
 
 *SARIMA · Prophet · XGBoost · LSTM · FastAPI · 43 US States · 24 Tests*
 
