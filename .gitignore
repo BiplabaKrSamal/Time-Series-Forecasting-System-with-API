@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+
+# Virtual environments
+venv/
+env/
+.env
+.venv
+
+# Test / IDE
+.pytest_cache/
+.coverage
+htmlcov/
+.vscode/
+.idea/
+
+# Model artifacts (too large for git)
+outputs/models/*.pkl
+outputs/models/*.h5
+outputs/models/*.keras
+
+# Large intermediate data
+outputs/forecasts/history.json
+outputs/forecasts/dashboard_data.json
+outputs/forecasts/demo_forecasts.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Bad dir from earlier
+{data,src/
+
+# TF logs
+*.log
