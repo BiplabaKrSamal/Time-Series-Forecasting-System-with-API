@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=26&pause=1000&color=6C63FF&center=true&width=700&lines=Time-Series+Forecasting+System;SARIMA+%C2%B7+Prophet+%C2%B7+XGBoost+%C2%B7+LSTM;43+US+States+%C2%B7+FastAPI+%C2%B7+Auto+Model+Selection" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=26&pause=1000&color=6C63FF&center=true&width=700&lines=Time-Series+Forecasting+System;SARIMA+%C2%B7+Prophet+%C2%B7+XGBoost+%C2%B7+LSTM;43+US+States+%C2%B7+FastAPI+%C2%B7+Live+API" alt="Typing SVG" />
 
 <br/>
 
@@ -16,7 +16,7 @@
 > **Production-ready end-to-end time-series forecasting system.**  
 > Trains SARIMA, Prophet, XGBoost and LSTM on **43 US states**, auto-selects the best model per state, and serves predictions through a 7-endpoint FastAPI REST service.
 
-[📊 Demo](#-interactive-demo) · [🚀 Quick Start](#-quick-start) · [🔌 API](docs/API_REFERENCE.md) · [📐 Architecture](docs/ARCHITECTURE.md) · [📈 Results](docs/RESULTS.md)
+[📊 Demo](#-interactive-demo) · [🚀 Quick Start](#-quick-start) · [🔌 API](docs/API_REFERENCE.md) · [📐 Architecture](docs/ARCHITECTURE.md) · [📈 Results](docs/RESULTS.md) · [🌐 Deploy](#-deploy)
 
 </div>
 
@@ -26,10 +26,10 @@
 
 | | |
 |---|---|
-| 🗺️ **43 / 43 states** forecasted | 📊 **Interactive demo** — `outputs/VIDEO_DEMO.html` |
-| 🤖 **4 models** compared per state | 📄 **Full docs** — 5 markdown files + PDF |
-| 🥇 **XGBoost wins 84%** of states | ✅ **24 / 24 tests** passing |
-| 💰 **$16B** total US Jan 2024 forecast | ⚡ **7 FastAPI** endpoints |
+| 🗺️ **43 / 43 states** forecasted | 🌐 **Deploy-ready** — Railway · Render · Fly · Docker |
+| 🤖 **4 models** compared per state | 📊 **Interactive demo** — `outputs/VIDEO_DEMO.html` |
+| 🥇 **XGBoost wins 84%** of states | 📄 **Full docs** — 5 markdown files + PDF |
+| 💰 **$16 B** total US Jan 2024 forecast | ✅ **24 / 24 tests** passing |
 
 ---
 
@@ -40,7 +40,7 @@ CSV  →  Clean  →  Monthly Panel  →  Feature Engineering  →  4 Models  �
          │              │                    │                   │
       2 date       interpolate          lag_1…12             SARIMA
       formats      sparse gaps          rolling stats        Prophet
-      commas       no leakage           sin/cos month        XGBoost   →  best MAPE  →  retrain  →  forecast
+      commas       no leakage           sin/cos month        XGBoost   →  best MAPE  →  forecast
       stripped     train/val split      holiday flag         LSTM
 ```
 
@@ -70,13 +70,7 @@ Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 ├── tests/
 │   └── test_forecasting_system.py    ← 24 unit & integration tests
 │
-├── docs/
-│   ├── ARCHITECTURE.md               ← System design & data flow
-│   ├── API_REFERENCE.md              ← All endpoints with examples
-│   ├── MODELS.md                     ← Each model in depth
-│   ├── RESULTS.md                    ← Full 43-state results & analysis
-│   └── SETUP.md                      ← Installation & troubleshooting
-│
+├── docs/                             ← Architecture · API · Models · Results · Setup
 ├── notebooks/
 │   └── demo_walkthrough.py           ← Annotated 10-step demo
 │
@@ -86,8 +80,13 @@ Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 │   ├── forecasts/all_forecasts.json  ← All 43 state forecasts + metrics
 │   └── plots/                        ← 43 forecast charts + EDA plots
 │
-├── run_pipeline.py                   ← ⭐ Main training entry-point
-└── requirements.txt
+├── run_pipeline.py                   ← ⭐ Main entry-point
+├── Dockerfile                        ← Production container
+├── docker-compose.yml                ← Local production run
+├── railway.toml                      ← Railway deploy config
+├── render.yaml                       ← Render deploy config
+├── fly.toml                          ← Fly.io deploy config
+└── Procfile                          ← Heroku/Railway process file
 ```
 
 ---
@@ -106,18 +105,49 @@ python run_pipeline.py --demo
 # 3 — All 43 states
 python run_pipeline.py
 
-# 4 — Specific states
-python run_pipeline.py California Texas "New York"
-
-# 5 — Start REST API
+# 4 — Start REST API
 cd api && uvicorn main:app --reload --port 8000
 # → Swagger UI: http://localhost:8000/docs
 
-# 6 — Run tests
+# 5 — Run tests
 python -m pytest tests/ -v
 
-# 7 — Open interactive demo (no server needed)
+# 6 — Open interactive demo (no server needed)
 open outputs/VIDEO_DEMO.html
+```
+
+---
+
+## 🌐 Deploy
+
+### Option 1 — Railway (recommended, free tier)
+
+1. Go to **[railway.app/new](https://railway.app/new)**
+2. Click **Deploy from GitHub repo**
+3. Select `BiplabaKrSamal/Time-Series-Forecasting-System-with-API`
+4. `railway.toml` is auto-detected — deploys in ~3 minutes
+5. Live at: `https://forecasting-api-production.up.railway.app`
+
+### Option 2 — Render (free tier)
+
+1. Go to **[render.com/new](https://render.com/new)** → Web Service
+2. Connect GitHub → select this repo
+3. `render.yaml` is auto-detected
+4. Live at: `https://forecasting-api.onrender.com`
+
+### Option 3 — Fly.io
+
+```bash
+fly auth login
+fly launch --config fly.toml
+fly deploy
+```
+
+### Option 4 — Docker (anywhere)
+
+```bash
+docker compose up --build
+# → http://localhost:8000/docs
 ```
 
 ---
@@ -139,36 +169,33 @@ open outputs/VIDEO_DEMO.html
 
 ## 🤖 Models
 
-| Model | Library | Selection Criterion | States Won |
-|---|---|---|---|
-| **SARIMA** | statsmodels | AIC grid search, ADF test | **7 / 43** |
-| **Prophet** | facebook/prophet | Multiplicative seasonality + US holidays | 0 / 43 |
-| **XGBoost** | xgboost 2.0 | Recursive walk-forward, 16 lag features | **36 / 43 ★** |
-| **LSTM** | TensorFlow 2.13 | LSTM(64)→Dropout→Dense, Huber loss | 0 / 43 |
+| Model | Library | States Won |
+|---|---|---|
+| **SARIMA** | statsmodels | **7 / 43** |
+| **XGBoost** | xgboost 2.0 | **36 / 43 ★** |
+| Prophet | facebook/prophet | 0 / 43 |
+| LSTM | TensorFlow 2.13 | 0 / 43 |
 
-Selection logic: lowest MAPE on 6-month holdout → retrain on full data → forecast.
-
-Full model docs: [`docs/MODELS.md`](docs/MODELS.md)
+Selection: lowest MAPE on 6-month holdout → retrain on full data → forecast.
 
 ---
 
 ## 🔌 API Endpoints
 
-```bash
-GET  /                         # health check
-GET  /states                   # list all 43 states
-GET  /forecast/{state}         # best-model 8-week forecast
-GET  /forecast/{state}/compare # all-model metrics + forecasts
-GET  /forecast/{state}/history # historical + forecast (chart-ready)
-POST /forecast/batch           # batch — multiple states
-GET  /models/leaderboard       # global win counts
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Health check + metadata |
+| `GET` | `/states` | List all 43 states |
+| `GET` | `/forecast/{state}` | Best-model 8-week forecast |
+| `GET` | `/forecast/{state}/compare` | All-model metrics + forecasts |
+| `GET` | `/forecast/{state}/history` | Historical + forecast (chart-ready) |
+| `POST` | `/forecast/batch` | Multiple states in one request |
+| `GET` | `/models/leaderboard` | Global win counts |
 
 ```bash
-# Examples
-curl http://localhost:8000/forecast/California
-curl http://localhost:8000/models/leaderboard
-curl -X POST http://localhost:8000/forecast/batch \
+curl https://YOUR-DEPLOYED-URL/forecast/California
+curl https://YOUR-DEPLOYED-URL/models/leaderboard
+curl -X POST https://YOUR-DEPLOYED-URL/forecast/batch \
      -H "Content-Type: application/json" \
      -d '{"states": ["California", "Texas", "Florida"]}'
 ```
@@ -180,56 +207,24 @@ Full reference: [`docs/API_REFERENCE.md`](docs/API_REFERENCE.md)
 ## 📈 Results
 
 ```
-XGBoost  ████████████████████████████████████  36 / 43 states (84%)
-SARIMA   ███████                                7 / 43 states (16%)
+XGBoost  ████████████████████████████████████  36/43 states (84%)
+SARIMA   ███████                                7/43 states (16%)
 ```
 
-Top forecasts (January 2024):
-
-| State | Best Model | Forecast |
-|---|---|---|
-| Texas | XGBoost | $1.57 B |
-| Florida | XGBoost | $1.46 B |
-| California | SARIMA | $1.08 B |
-| Georgia | XGBoost | $742 M |
+| State | Best Model | Jan 2024 | Feb 2024 |
+|---|---|---|---|
+| Texas | XGBoost | $1.57 B | $1.71 B |
+| Florida | XGBoost | $1.46 B | $1.50 B |
+| California | SARIMA | $1.08 B | $1.11 B |
+| Georgia | XGBoost | $742 M | $842 M |
 
 Full 43-state table: [`docs/RESULTS.md`](docs/RESULTS.md)
 
 ---
 
-## 📄 Documentation
-
-| File | Contents |
-|---|---|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | System layers, data flow, dependency graph |
-| [`docs/API_REFERENCE.md`](docs/API_REFERENCE.md) | All 7 endpoints with request/response schemas |
-| [`docs/MODELS.md`](docs/MODELS.md) | Theory, config and win conditions for each model |
-| [`docs/RESULTS.md`](docs/RESULTS.md) | Full 43-state table, EDA findings, limitations |
-| [`docs/SETUP.md`](docs/SETUP.md) | Installation, environment, troubleshooting |
-| [`outputs/Documentation.pdf`](outputs/Documentation.pdf) | 8-page printable technical document |
-
----
-
-## 🧪 Tests
-
-```bash
-python -m pytest tests/ -v
-# 24 passed in ~50s
-```
-
-| Class | Tests |
-|---|---|
-| `TestPreprocessing` | Date parsing, NaN handling, no-leakage split |
-| `TestFeatures` | Shape, zero NaN output, sequence construction |
-| `TestModelInterfaces` | fit/predict contract for all 4 models |
-| `TestEvaluation` | Metrics, selector logic |
-| `TestAPI` | All 7 endpoints, 404, batch |
-
----
-
 ## 🛠️ Stack
 
-`Python 3.10+` · `statsmodels` · `prophet` · `xgboost` · `tensorflow` · `fastapi` · `uvicorn` · `pydantic v2` · `pandas` · `numpy` · `matplotlib` · `joblib` · `pytest`
+`Python 3.11` · `statsmodels` · `prophet` · `xgboost` · `tensorflow-cpu` · `fastapi` · `gunicorn` · `uvicorn` · `pydantic v2` · `pandas` · `numpy` · `matplotlib` · `joblib` · `pytest` · `Docker`
 
 ---
 
@@ -240,5 +235,5 @@ MIT — see [LICENSE](LICENSE).
 ---
 
 <div align="center">
-<sub>SARIMA · Prophet · XGBoost · LSTM · FastAPI · 43 US States · 24 Tests Passing</sub>
+<sub>SARIMA · Prophet · XGBoost · LSTM · FastAPI · 43 US States · 24 Tests · Docker · Railway · Render · Fly.io</sub>
 </div>
