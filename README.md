@@ -120,22 +120,14 @@ open outputs/VIDEO_DEMO.html
 
 ## 🌐 Deploy
 
-### Option 1 — Railway (recommended, free tier)
-
-1. Go to **[railway.app/new](https://railway.app/new)**
-2. Click **Deploy from GitHub repo**
-3. Select `BiplabaKrSamal/Time-Series-Forecasting-System-with-API`
-4. `railway.toml` is auto-detected — deploys in ~3 minutes
-5. Live at: `https://forecasting-api-production.up.railway.app`
-
-### Option 2 — Render (free tier)
+### Option 1 — Render (free tier)
 
 1. Go to **[render.com/new](https://render.com/new)** → Web Service
 2. Connect GitHub → select this repo
 3. `render.yaml` is auto-detected
 4. Live at: `https://forecasting-api.onrender.com`
 
-### Option 3 — Fly.io
+### Option 2 — Fly.io
 
 ```bash
 fly auth login
@@ -143,7 +135,7 @@ fly launch --config fly.toml
 fly deploy
 ```
 
-### Option 4 — Docker (anywhere)
+### Option 3 — Docker (anywhere)
 
 ```bash
 docker compose up --build
