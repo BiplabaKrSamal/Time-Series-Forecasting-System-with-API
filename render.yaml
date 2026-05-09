@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: forecasting-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: >
+      gunicorn api.main:app
+      --workers 2
+      --worker-class uvicorn.workers.UvicornWorker
+      --bind 0.0.0.0:$PORT
+      --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      - key: TF_CPP_MIN_LOG_LEVEL
+        value: "3"
+      - key: TF_ENABLE_ONEDNN_OPTS
+        value: "0"
+    healthCheckPath: /health
+    autoDeploy: true

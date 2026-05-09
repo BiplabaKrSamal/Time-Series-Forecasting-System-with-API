@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+    - name: Install test dependencies
+      run: pip install fastapi uvicorn pydantic pandas numpy httpx pytest statsmodels
+
+    - name: Create mock forecast data
+      run: |
+        mkdir -p outputs/forecasts
+        python3 -c "
+        import json
+        fake = {'California': {
+          'best_model':'XGBoost',
+          'forecast_dates':['2024-01-31','2024-02-29'],
+          'forecast_values':[5e8,5.1e8],
+          'all_model_forecasts':{'XGBoost':[5e8,5.1e8],'SARIMA':[4.9e8,5e8]},
+          'metrics':[{'model':'XGBoost','MAE':1e6,'RMSE':2e6,'MAPE':2.1,'sMAPE':2.0},
+                     {'model':'SARIMA','MAE':2e6,'RMSE':3e6,'MAPE':3.5,'sMAPE':3.3}]
+        }}
+        json.dump(fake, open('outputs/forecasts/all_forecasts.json','w'))
+        "
+
+    - name: Run tests
+      run: python -m pytest tests/ -v --tb=short
+
+    - name: Smoke test API startup
+      run: |
+        python3 -c "
+        import sys; sys.path.insert(0,'src'); sys.path.insert(0,'api')
+        import main; print('API loads OK — endpoints:', len([r for r in main.app.routes if hasattr(r,'methods')]))
+        "

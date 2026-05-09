@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: forecasting-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - TF_CPP_MIN_LOG_LEVEL=3
+    volumes:
+      # Mount outputs so forecasts persist after retraining
+      - ./outputs/forecasts:/app/outputs/forecasts:ro
+      - ./outputs/models:/app/outputs/models:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python3", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # Optional: retrain on schedule
+  # trainer:
+  #   build: .
+  #   command: python run_pipeline.py
+  #   volumes:
+  #     - ./data:/app/data:ro
+  #     - ./outputs:/app/outputs
+  #   profiles: ["train"]
