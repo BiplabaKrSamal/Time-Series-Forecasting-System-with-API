@@ -9,9 +9,5 @@ services:
         value: "3.11.0"
       - key: TF_CPP_MIN_LOG_LEVEL
         value: "3"
-      - key: TF_ENABLE_ONEDNN_OPTS
-        value: "0"
-      - key: PYTHONPATH
-        value: "src:api"
     healthCheckPath: /health
     autoDeploy: true
